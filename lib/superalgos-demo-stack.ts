@@ -89,32 +89,42 @@ export class SuperalgosDemoStack extends cdk.Stack {
       securityGroup: securityGroup
     });
 
-    const loadBalancer = new elbv2.ApplicationLoadBalancer(
+    const loadBalancer = new elbv2.NetworkLoadBalancer(
       this,
-      "superagosALB",
+      "superagosNLB",
       {
         vpc: vpc,
         internetFacing: true,
       }
     );
 
-    const socketTargetGroup = new elbv2.ApplicationTargetGroup(
+    const socketTargetGroup = new elbv2.NetworkTargetGroup(
       this,
       "socketTargetGroup",
       {
         vpc: vpc,
         port: socketPort,
-        protocol: elbv2.ApplicationProtocol.HTTP
+        protocol: elbv2.Protocol.TCP,
+        healthCheck: {
+          enabled: true,
+          port: socketPort.toString(),
+          protocol: elbv2.Protocol.TCP
+        }
       }
     );
 
-    const webTargetGroup = new elbv2.ApplicationTargetGroup(
+    const webTargetGroup = new elbv2.NetworkTargetGroup(
       this,
       "webTargetGroup",
       {
         vpc: vpc,
         port: webPort,
-        protocol: elbv2.ApplicationProtocol.HTTP
+        protocol: elbv2.Protocol.TCP,
+        healthCheck: {
+          enabled: true,
+          port: webPort.toString(),
+          protocol: elbv2.Protocol.TCP
+        }
       }
     );
 
@@ -133,13 +143,13 @@ export class SuperalgosDemoStack extends cdk.Stack {
 
     loadBalancer.addListener("socketListener", {
       port: socketPort,
-      protocol: elbv2.ApplicationProtocol.HTTP,
+      protocol: elbv2.Protocol.TCP,
       defaultTargetGroups: [socketTargetGroup]
     });
 
     loadBalancer.addListener("webListener", {
       port: webPort,
-      protocol: elbv2.ApplicationProtocol.HTTP,
+      protocol: elbv2.Protocol.TCP,
       defaultTargetGroups: [webTargetGroup]
     });
   }
