@@ -58,8 +58,8 @@ export class SuperalgosDemoStack extends cdk.Stack {
       this,
       "superalgosTaskDef",
       {
-        memoryLimitMiB: 4096,
-        cpu: 2048,
+        memoryLimitMiB: 1024,
+        cpu: 512,
         taskRole: taskrole,
       }
     );
