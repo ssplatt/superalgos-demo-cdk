@@ -67,8 +67,12 @@ export class SuperalgosDemoStack extends cdk.Stack {
     const container = taskDefinition.addContainer(
       "superalgosContainer",
       {
-        image: ecs.ContainerImage.fromRegistry("ghcr.io/superalgos/superalgos"),
+        image: ecs.ContainerImage.fromRegistry("ghcr.io/superalgos/superalgos:demo"),
         command: ['minMemo', 'demoMode'],
+        environment: {
+          'DEMO_MODE': 'true',
+          'DEMO_MODE_HOST': 'demo.superalgos.org'
+        },
         logging: logDriver,
       }
     );
